@@ -30,6 +30,7 @@ server.on("request", (req, res) => {
       console.log(data);
       friends.push(JSON.parse(friend));
     });
+    req.pipe(res);
   } else if (req.method === "GET" && items[1] === "friends") {
     res.statusCode = 200;
     res.setHeader("Content-Type", "appplication/json");
