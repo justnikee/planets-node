@@ -1,24 +1,45 @@
 const http = require("http");
 
-const PORT = 3000;
+const PORT = 4000;
 
 const server = http.createServer();
 
+const friends = [
+  {
+    id: 1,
+    name: "nikhil",
+    status: "curruntly-busy",
+  },
+  {
+    id: 2,
+    name: "nikhil thakur",
+    status: "curruntly-busy",
+  },
+  {
+    id: 3,
+    name: "Nikeeyyy",
+    status: "curruntly-busy",
+  },
+];
+
 server.on("request", (req, res) => {
-  if (req.url === "/friends") {
+  const items = req.url.split("/");
+  if (req.method === "POST" && items[1] === "friends") {
+    req.on("data", (data) => {
+      const friend = data.toString();
+      console.log(data);
+      friends.push(JSON.parse(friend));
+    });
+  } else if (req.method === "GET" && items[1] === "friends") {
     res.statusCode = 200;
     res.setHeader("Content-Type", "appplication/json");
-    // res.writeHead(200, {
-    //   "Content-Type": "application/json",
-    // });
-    res.end(
-      JSON.stringify({
-        id: 1,
-        name: "nikhil",
-        status: "curruntly-busy",
-      })
-    );
-  } else if (req.url === "/message") {
+    if (items.length === 3) {
+      const friendsIndex = Number(items[2]);
+      res.end(JSON.stringify(friends[friendsIndex]));
+    } else {
+      res.end(JSON.stringify(friends));
+    }
+  } else if (items[1] === "message") {
     res.setHeader("Content-Type", "text/html");
 
     res.write("<html>");
